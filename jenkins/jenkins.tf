@@ -3,6 +3,10 @@ data "docker_registry_image" "jenkins_lts" {
 
 }
 
+variable "jenkins_nodes" {
+  type = list(any)
+}
+
 resource "docker_image" "jenkins_lts" {
   name          = data.docker_registry_image.jenkins_lts.name
   pull_triggers = [data.docker_registry_image.jenkins_lts.sha256_digest]
@@ -13,6 +17,9 @@ resource "docker_container" "jenkins_lts" {
   image   = docker_image.jenkins_lts.image_id
   name    = "jenkins-lts"
   restart = "on-failure"
+
+  env = ["JENKINS_SSH_NODES=\"${join(" ", var.jenkins_nodes)}\""]
+
 
   ports {
     internal = 8080
@@ -27,15 +34,21 @@ resource "docker_container" "jenkins_lts" {
     volume_name    = "jenkins_home"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d/executors.groovy"
+    container_path = "/usr/share/jenkins/ref/init.groovy.d/00-executors.groovy"
     host_path      = "${path.cwd}/executors.groovy"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d/plugins.groovy"
+    container_path = "/usr/share/jenkins/ref/init.groovy.d/01-plugins.groovy"
     host_path      = "${path.cwd}/plugins.groovy"
+  }
+  volumes {
+    container_path = "/usr/share/jenkins/ref/init.groovy.d/02-nodes.groovy"
+    host_path      = "${path.cwd}/nodes.groovy"
   }
   volumes {
     container_path = "/usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state"
     host_path      = "${path.cwd}/jenkins.install.UpgradeWizard.state"
   }
+
+
 }

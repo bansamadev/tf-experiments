@@ -2,6 +2,10 @@ variable "jenkins_nodes" {
   type = number
 }
 
+variable "host_interface" {
+  type = string
+}
+
 resource "virtualbox_vm" "node" {
   count     = var.jenkins_nodes
   name      = format("node-%02d", count.index + 1)
@@ -11,15 +15,12 @@ resource "virtualbox_vm" "node" {
   user_data = file("${path.module}/user_data")
 
   network_adapter {
-    type           = "hostonly"
-    host_interface = "vboxnet0"
+    type           = "bridged"
+    host_interface = var.host_interface
   }
 }
 
-output "IPAddr" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
+output "ip_adapters" {
+  value = [for o in virtualbox_vm.node : o.network_adapter[0].ipv4_address]
 }
 
-output "IPAddr_2" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
-}
