@@ -9,10 +9,12 @@ import hudson.slaves.EnvironmentVariablesNodeProperty.Entry
 jenkinsNodes = System.getenv("JENKINS_SSH_NODES")
 hostKeyVerificationStrategy = new NonVerifyingKeyVerificationStrategy()
 
+nodeIndex = 1
+
 if (jenkinsNodes) {
 	for (nodeAddress in jenkinsNodes.split(" ")){
 		launcher = new hudson.plugins.sshslaves.SSHLauncher(
-			nodeAddress,
+			"vagrant-node-${nodeIndex}",
 			22,
 			"vagrantInsecureKey",
 			"",
@@ -40,6 +42,7 @@ if (jenkinsNodes) {
 		envPro = new EnvironmentVariablesNodeProperty(env)
 		agent.getNodeProperties().add(envPro)
 		Jenkins.instance.addNode(agent)
+		nodeIndex += 1
 
 	}
 

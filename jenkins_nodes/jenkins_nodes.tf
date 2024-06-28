@@ -25,7 +25,16 @@ resource "virtualbox_vm" "node" {
     host        = self.network_adapter[0].ipv4_address
     private_key = file("${path.module}/vagrant.key")
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update && sudo apt -y dist-upgrade",
+      "sudo apt install -y openjdk-17-jdk openjdk-17-jdk-headless git wget curl unzip neovim",
+    ]
+  }
 }
+
+
 
 output "ip_adapters" {
   value = [for o in virtualbox_vm.node : o.network_adapter[0].ipv4_address]
