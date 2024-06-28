@@ -35,19 +35,19 @@ resource "docker_container" "jenkins_lts" {
   }
   volumes {
     container_path = "/usr/share/jenkins/ref/init.groovy.d/00-executors.groovy"
-    host_path      = "${path.cwd}/executors.groovy"
+    host_path      = "${path.cwd}/${path.module}/executors.groovy"
   }
   volumes {
     container_path = "/usr/share/jenkins/ref/init.groovy.d/01-plugins.groovy"
-    host_path      = "${path.cwd}/plugins.groovy"
+    host_path      = "${path.cwd}/${path.module}/plugins.groovy"
   }
   volumes {
     container_path = "/usr/share/jenkins/ref/init.groovy.d/02-nodes.groovy"
-    host_path      = "${path.cwd}/nodes.groovy"
+    host_path      = "${path.cwd}/${path.module}/nodes.groovy"
   }
   volumes {
     container_path = "/usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state"
-    host_path      = "${path.cwd}/jenkins.install.UpgradeWizard.state"
+    host_path      = "${path.cwd}/${path.module}/jenkins.install.UpgradeWizard.state"
   }
 
 
