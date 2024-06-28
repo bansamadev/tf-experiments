@@ -18,7 +18,7 @@ resource "docker_container" "jenkins_lts" {
   name    = "jenkins-lts"
   restart = "on-failure"
 
-  env = ["JENKINS_SSH_NODES=\"${join(" ", var.jenkins_nodes)}\""]
+  env = ["JENKINS_SSH_NODES=${join(" ", var.jenkins_nodes)}"]
 
 
   ports {
@@ -34,20 +34,24 @@ resource "docker_container" "jenkins_lts" {
     volume_name    = "jenkins_home"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d/00-executors.groovy"
+    container_path = "/var/jenkins_home/jenkins.install.UpgradeWizard.state"
+    host_path      = "${path.cwd}/${path.module}/jenkins.install.UpgradeWizard.state"
+  }
+  volumes {
+    container_path = "/var/jenkins_home/init.groovy.d/00-executors.groovy"
     host_path      = "${path.cwd}/${path.module}/executors.groovy"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d/01-plugins.groovy"
+    container_path = "/var/jenkins_home/init.groovy.d/01-plugins.groovy"
     host_path      = "${path.cwd}/${path.module}/plugins.groovy"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d/02-nodes.groovy"
+    container_path = "/var/jenkins_home/init.groovy.d/02-nodes.groovy"
     host_path      = "${path.cwd}/${path.module}/nodes.groovy"
   }
   volumes {
-    container_path = "/usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state"
-    host_path      = "${path.cwd}/${path.module}/jenkins.install.UpgradeWizard.state"
+    container_path = "/var/jenkins_home/jenkins.yaml"
+    host_path      = "${path.cwd}/${path.module}/jenkins.yaml"
   }
 
 

@@ -6,7 +6,7 @@ import hudson.slaves.*
 import hudson.plugins.sshslaves.verifiers.*
 import hudson.slaves.EnvironmentVariablesNodeProperty.Entry
 
-jenkinsNodes = System.getenv("PATH")
+jenkinsNodes = System.getenv("JENKINS_SSH_NODES")
 hostKeyVerificationStrategy = new NonVerifyingKeyVerificationStrategy()
 
 if (jenkinsNodes) {

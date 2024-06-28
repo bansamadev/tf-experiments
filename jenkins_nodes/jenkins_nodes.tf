@@ -18,6 +18,13 @@ resource "virtualbox_vm" "node" {
     type           = "bridged"
     host_interface = var.host_interface
   }
+
+  connection {
+    type        = "ssh"
+    user        = "vagrant"
+    host        = self.network_adapter[0].ipv4_address
+    private_key = file("${path.module}/vagrant.key")
+  }
 }
 
 output "ip_adapters" {
