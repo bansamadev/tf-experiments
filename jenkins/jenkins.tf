@@ -1,6 +1,5 @@
 data "docker_registry_image" "jenkins_lts" {
   name = "jenkins/jenkins:lts-jdk17"
-
 }
 
 variable "jenkins_nodes" {

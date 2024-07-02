@@ -14,7 +14,7 @@ nodeIndex = 1
 if (jenkinsNodes) {
 	for (nodeAddress in jenkinsNodes.split(" ")){
 		launcher = new hudson.plugins.sshslaves.SSHLauncher(
-			"vagrant-node-${nodeIndex}",
+			nodeAddress,
 			22,
 			"vagrantInsecureKey",
 			"",
@@ -27,7 +27,7 @@ if (jenkinsNodes) {
 			hostKeyVerificationStrategy
 		)
 		agent = new DumbSlave(
-			nodeAddress,
+			"vagrant-node-${nodeIndex}",
 			$//home/vagrant/$,
 			launcher
 		)
