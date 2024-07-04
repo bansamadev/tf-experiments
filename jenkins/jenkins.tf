@@ -45,7 +45,11 @@ resource "docker_container" "jenkins_lts" {
     host_path      = "${path.cwd}/${path.module}/plugins.groovy"
   }
   volumes {
-    container_path = "/var/jenkins_home/init.groovy.d/02-nodes.groovy"
+    container_path = "/var/jenkins_home/init.groovy.d/02-credentials.groovy"
+    host_path      = "${path.cwd}/${path.module}/credentials.groovy"
+  }
+  volumes {
+    container_path = "/var/jenkins_home/init.groovy.d/03-nodes.groovy"
     host_path      = "${path.cwd}/${path.module}/nodes.groovy"
   }
   volumes {

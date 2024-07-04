@@ -15,7 +15,7 @@ store = instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCrede
 
 // Add Vagrant public (insecure) ssh key
 
-vagrantInsecureKey = BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(
+vagrantInsecureKey = new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(
 '''
 -----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzI
