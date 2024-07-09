@@ -13,6 +13,12 @@ variable "vault_token" {
   sensitive = true
 }
 
+variable "jenkins_password" {
+  type      = string
+  default   = "jenkins"
+  sensitive = true
+}
+
 output "jenkins_nodes" {
   value = module.jenkins_nodes.ip_adapters
 }

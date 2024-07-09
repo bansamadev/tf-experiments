@@ -2,7 +2,8 @@ module "jenkins_server" {
   source        = "./jenkins"
   jenkins_nodes = module.jenkins_nodes.ip_adapters
   depends_on = [
-    module.jenkins_nodes
+    module.jenkins_nodes,
+    module.vault
   ]
 
 }
@@ -14,6 +15,7 @@ module "jenkins_nodes" {
 }
 
 module "vault" {
-  source      = "./vault"
-  vault_token = var.vault_token
+  source           = "./vault"
+  vault_token      = var.vault_token
+  jenkins_password = var.jenkins_password
 }

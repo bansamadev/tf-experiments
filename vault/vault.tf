@@ -7,6 +7,11 @@ variable "vault_token" {
   sensitive = true
 }
 
+variable "jenkins_password" {
+  type      = string
+  sensitive = true
+}
+
 resource "docker_image" "vault_image" {
   name          = data.docker_registry_image.vault_image.name
   pull_triggers = [data.docker_registry_image.vault_image.sha256_digest]
@@ -18,23 +23,55 @@ resource "docker_container" "vault" {
   name    = "vault"
   restart = "on-failure"
 
-  env = ["VAULT_DEV_ROOT_TOKEN_ID=${var.vault_token}",
-    "VAULT_LOCAL_CONFIG={\"storage\": {\"file\": {\"path\": \"/vault/file\"}}, \"listener\": [{\"tcp\": { \"address\": \"0.0.0.0:8200\", \"tls_disable\": true}}], \"default_lease_ttl\": \"168h\", \"max_lease_ttl\": \"720h\", \"ui\": true}"
+  env = [
+    "VAULT_DEV_ROOT_TOKEN_ID=${var.vault_token}",
   ]
+
 
   capabilities {
     add = ["IPC_LOCK"]
   }
 
-
   ports {
     internal = 8200
     external = 8200
   }
-  ports {
-    internal = 50000
-    external = 50000
-  }
 
+}
 
+resource "vault_auth_backend" "userpass" {
+  type = "userpass"
+}
+
+resource "vault_policy" "admin" {
+  name   = "admin"
+  policy = <<EOT
+path "*" {
+  capabilities = ["sudo", "create", "read", "update", "patch", "delete", "list"]
+}
+EOT
+}
+
+resource "vault_generic_endpoint" "admin" {
+  depends_on           = [vault_auth_backend.userpass]
+  path                 = "auth/userpass/users/admin"
+  ignore_absent_fields = true
+  data_json            = <<EOT
+{
+  "policies": ["admin"],
+  "password": "${var.vault_token}"
+}
+EOT
+}
+
+resource "vault_generic_endpoint" "jenkins" {
+  depends_on           = [vault_auth_backend.userpass]
+  path                 = "auth/userpass/users/jenkins "
+  ignore_absent_fields = true
+  data_json            = <<EOT
+{
+  "policies": ["default"],
+  "password": "${var.jenkins_password}"
+}
+EOT
 }
