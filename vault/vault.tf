@@ -52,6 +52,15 @@ path "*" {
 EOT
 }
 
+resource "vault_policy" "jenkins" {
+  name   = "jenkins"
+  policy = <<EOT
+path "secret/*" {
+  capabilities = ["read", "list"]
+}
+EOT
+}
+
 resource "vault_generic_endpoint" "admin" {
   depends_on           = [vault_auth_backend.userpass]
   path                 = "auth/userpass/users/admin"
@@ -66,11 +75,11 @@ EOT
 
 resource "vault_generic_endpoint" "jenkins" {
   depends_on           = [vault_auth_backend.userpass]
-  path                 = "auth/userpass/users/jenkins "
+  path                 = "auth/userpass/users/jenkins"
   ignore_absent_fields = true
   data_json            = <<EOT
 {
-  "policies": ["default"],
+  "policies": ["jenkins"],
   "password": "${var.jenkins_password}"
 }
 EOT
