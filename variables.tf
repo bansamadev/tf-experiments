@@ -22,3 +22,7 @@ variable "jenkins_password" {
 output "jenkins_nodes" {
   value = module.jenkins_nodes.ip_adapters
 }
+
+output "puppet_nodes" {
+  value = module.puppet.ip_adapters
+}
